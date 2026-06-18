@@ -450,3 +450,88 @@ header a:hover {
     border-radius: var(--radius-sm);
     background-color: var(--purple-500);
 }
+
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+}
+
+.contact-info h2 {
+    margin-bottom: var(--spacing-md);
+}
+
+.contact-info p {
+    margin-bottom: var(--spacing-lg);
+}
+
+.social-container {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+.social-icon {
+    width: 5rem;
+    height: 5rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition-default);
+}
+
+.social-icon img {
+    width: 100%;
+    filter: brightness(0) saturate(100%);
+    transition: filter 0.3s ease;
+}
+
+.social-icon:hover img {
+    filter: brightness(0) 
+            saturate(100%) 
+            invert(42%) 
+            sepia(93%) 
+            saturate(1352%) 
+            hue-rotate(243deg) 
+            brightness(79%) 
+            contrast(91%);
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+form label {
+    font-size: var(--text-base);
+    font-weight: 600;
+}
+
+form input,
+form textarea {
+    width: 100%;
+    padding: 0.5rem var(--spacing-sm);
+    border: 0.25rem solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--text-base);
+    transition: border-color 0.3s ease;
+}
+
+form input:focus,
+form textarea:focus {
+    border-color: var(--purple-500);
+    outline: none;
+}
+
+form textarea {
+    min-height: 5rem;
+    resize: none;
+}
+
+form span {
+    margin-top: -0.75rem;
+    font-size: var(--text-sm);
+    color: var(--error);
+}
