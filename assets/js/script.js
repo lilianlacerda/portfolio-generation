@@ -1,6 +1,9 @@
 // Seletor da Seção About (section)
 const about = document.querySelector('#about');
 
+// Seletor da Seção Projects (Carrossel)
+const swiperWrapper = document.querySelector('.swiper-wrapper');
+
 async function getAboutGithub() {
     try {
 
@@ -51,3 +54,161 @@ async function getAboutGithub() {
 
 // Executar a função ao carregar o script
 getAboutGithub();
+
+async function getProjectsGithub() {
+    try {
+
+        // Não esqueça de trocar conteudoGeneration pelo seu usuário do GitHub
+        const resposta = await fetch('https://api.github.com/users/lilianlacerda/repos?sort=updated&per_page=6');
+        const repositorios = await resposta.json();
+
+        swiperWrapper.innerHTML = '';
+
+        // Objeto contendo a lista de logos das linguagens
+        const linguagens = {
+			'JavaScript': 'javascript',
+			'TypeScript': 'typescript',
+			'Python': 'python',
+			'Java': 'java',
+			'HTML': 'html',
+			'CSS': 'css',
+			'PHP': 'php',
+			'C#': 'csharp',
+			'Go': 'go',
+			'Kotlin': 'kotlin',
+			'Swift': 'swift',
+			'C': 'c',
+			'C++': 'c_plus',
+			'GitHub': 'github',
+		}
+
+        repositorios.forEach(repositorio => {
+      
+            // Seleciona o nome da Linguagem padrão do repositório
+            const linguagem = repositorio.language || 'GitHub'
+                    
+            // Seleciona o logo da Linguagem padrão do repositório
+            const logo = linguagens[linguagem] ?? linguagens['GitHub']
+                    
+            // Constrói a URL que aponta para o logo da Linguagem padrão do repositório
+            const urlLogo = `./assets/icons/languages/${logo}.svg`
+            
+            // Formata o nome do reposiório
+            const nomeFormatado = repositorio.name
+                .replace(/[-_]/g, ' ')
+                .replace(/[^a-zA-Z0-9\s]/g, '')
+                .toUpperCase();
+
+            // Função para truncar texto da descrição
+     		const truncar = (texto, limite) => texto.length > limite
+                ? texto.substring(0, limite) + '...'
+                : texto
+
+            // Define a descrição do Repositório
+            const descricao = repositorio.description
+                ? truncar(repositorio.description, 100)
+                : 'Projeto desenvolvido no GitHub'
+
+            // tags
+            const tags = repositorio.topics?.length > 0
+                ? repositorio.topics.slice(0, 3).map(topic => `<span class="tag">${topic}</span>`).join('')
+                : `<span class="tag">${linguagem}</span>`;
+
+            // Cria o Botão Deploy
+            const botaoDeploy = repositorio.homepage
+                ? `<a href="${repositorio.homepage}" target="_blank" class="botao-outline botao-sm">Deploy</a>`
+                : ''
+
+            // Botões de ação
+            const botoesAcao = `
+                <div class="project-buttons">
+                    <a href="${repositorio.html_url}" target="_blank" class="botao botao-sm">
+                        GitHub
+                    </a>
+                    ${botaoDeploy}
+                </div>
+            `;
+
+            swiperWrapper.innerHTML += `
+                <div class="swiper-slide">
+                    <article class="project-card">
+                        <div class="project-image">
+                            <img src="${urlLogo}" 
+                                alt="Ícone ${linguagem}"
+                                onerror="this.onerror=null; this.src='./assets/icons/languages/github.svg';">
+                        </div>
+
+                        <div class="project-content">
+                            <h3>${nomeFormatado}</h3>
+                            <p>${descricao}</p>
+                            <div class="project-tags">${tags}</div>
+                            ${botoesAcao}
+                        </div>
+                    </article>
+                </div>
+            `;
+        });
+
+        // Inicia o Carrossel
+        iniciarSwiper();
+
+    } catch (error) {
+        console.error('Erro ao buscar repositórios:', error);
+    }
+}
+
+// Executar a função ao carregar o script
+getProjectsGithub()
+
+function iniciarSwiper() {
+    new Swiper('.projects-swiper', {
+        slidesPerView: 1,
+        slidesPerGroup: 1,
+        spaceBetween: 24,
+        centeredSlides: false,
+        loop: true,
+        watchOverflow: true,
+        
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+                slidesPerGroup: 1,
+                spaceBetween: 40,
+                centeredSlides: false
+            },
+            769: { 
+                slidesPerView: 2,
+                slidesPerGroup: 2,
+                spaceBetween: 40,
+                centeredSlides: false
+            },
+            1025: { 
+                slidesPerView: 3,
+                slidesPerGroup: 3, 
+                spaceBetween: 54,
+                centeredSlides: false
+            }
+        },
+        
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true,
+        },
+        
+        autoplay: {
+            delay: 5000,
+            pauseOnMouseEnter: true,
+            disableOnInteraction: false,
+        },
+        
+        grabCursor: true, 
+        slidesOffsetBefore: 0, 
+        slidesOffsetAfter: 0, 
+    });
+}
