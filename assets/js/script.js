@@ -27,17 +27,13 @@ async function getAboutGithub() {
             <article class="about-content">
                 <h2>Sobre mim</h2>
                 <p>
-                    [em processo de escrita]
-                </p>
-                
-                <p>
-                    [em processo de escrita]
+                    Olá! Sou Lilian, apaixonada por tecnologia e desenvolvimento de software. Atualmente estou construindo minha carreira como desenvolvedora Full Stack, com foco em Java e Spring Boot e React. Minha experiência anterior em liderança e suporte técnico me ensinou a resolver problemas de forma estratégica, trabalhar em equipe e manter o foco na experiência do usuário. Gosto de aprender novas tecnologias, desenvolver projetos práticos e transformar conhecimento em soluções que façam a diferença. Este portfólio reúne alguns dos projetos que marcaram minha jornada e representam minha evolução constante como profissional de tecnologia.
                 </p>
 
                 <div class="about-buttons-data">
                     <div class="buttons-container">
                         <a href="${perfil.html_url}" target="_blank" class="botao">Ver GitHub</a>
-                        <a href="#" target="_blank" class="botao-outline">Currículo</a>
+                        <a href="https://drive.google.com/file/d/1jbpPhwKOuqGAIA_2k6a1UAegls6YmYOk/view?usp=sharing" target="_blank" class="botao-outline">Currículo</a>
                     </div>
                     
                     <div class="data-container">
