@@ -1,25 +1,24 @@
 // Seletor da Seção About (section)
-const about = document.querySelector('#about');
+const about = document.querySelector("#about");
 
 // Seletor da Seção Projects (Carrossel)
-const swiperWrapper = document.querySelector('.swiper-wrapper');
+const swiperWrapper = document.querySelector(".swiper-wrapper");
 
 // Seletor do Formulário
-const formulario = document.querySelector('#formulario');
+const formulario = document.querySelector("#formulario");
 
 // Regex de validação do e-mail
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 async function getAboutGithub() {
-    try {
+  try {
+    // Não esqueça de trocar conteudoGeneration pelo seu usuário do GitHub
+    const resposta = await fetch("https://api.github.com/users/lilianlacerda");
+    const perfil = await resposta.json();
 
-        // Não esqueça de trocar conteudoGeneration pelo seu usuário do GitHub
-        const resposta = await fetch('https://api.github.com/users/lilianlacerda');
-        const perfil = await resposta.json();
+    about.innerHTML = "";
 
-        about.innerHTML = '';
-
-        about.innerHTML = `
+    about.innerHTML = `
             <figure class="about-image">
                 <img src="${perfil.avatar_url}" alt="Foto do perfil - ${perfil.name}">
             </figure>
@@ -33,7 +32,7 @@ async function getAboutGithub() {
                 <div class="about-buttons-data">
                     <div class="buttons-container">
                         <a href="${perfil.html_url}" target="_blank" class="botao">Ver GitHub</a>
-                        <a href="https://drive.google.com/file/d/1jbpPhwKOuqGAIA_2k6a1UAegls6YmYOk/view?usp=sharing" target="_blank" class="botao-outline">Currículo</a>
+                        <a href="https://drive.google.com/file/d/1NxBhA5XAec6C0NjQ6jZtHHzt-dPxce0b/view?usp=sharing" target="_blank" class="botao-outline">Currículo</a>
                     </div>
                     
                     <div class="data-container">
@@ -49,80 +48,83 @@ async function getAboutGithub() {
                 </div>
             </article>
         `;
-    } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
-    }
+  } catch (error) {
+    console.error("Erro ao buscar dados do usuário:", error);
+  }
 }
 
 // Executar a função ao carregar o script
 getAboutGithub();
 
 async function getProjectsGithub() {
-    try {
+  try {
+    // Não esqueça de trocar conteudoGeneration pelo seu usuário do GitHub
+    const resposta = await fetch(
+      "https://api.github.com/users/lilianlacerda/repos?sort=updated&per_page=6",
+    );
+    const repositorios = await resposta.json();
 
-        // Não esqueça de trocar conteudoGeneration pelo seu usuário do GitHub
-        const resposta = await fetch('https://api.github.com/users/lilianlacerda/repos?sort=updated&per_page=6');
-        const repositorios = await resposta.json();
+    swiperWrapper.innerHTML = "";
 
-        swiperWrapper.innerHTML = '';
+    // Objeto contendo a lista de logos das linguagens
+    const linguagens = {
+      JavaScript: "javascript",
+      TypeScript: "typescript",
+      Python: "python",
+      Java: "java",
+      HTML: "html",
+      CSS: "css",
+      PHP: "php",
+      "C#": "csharp",
+      Go: "go",
+      Kotlin: "kotlin",
+      Swift: "swift",
+      C: "c",
+      "C++": "c_plus",
+      GitHub: "github",
+    };
 
-        // Objeto contendo a lista de logos das linguagens
-        const linguagens = {
-			'JavaScript': 'javascript',
-			'TypeScript': 'typescript',
-			'Python': 'python',
-			'Java': 'java',
-			'HTML': 'html',
-			'CSS': 'css',
-			'PHP': 'php',
-			'C#': 'csharp',
-			'Go': 'go',
-			'Kotlin': 'kotlin',
-			'Swift': 'swift',
-			'C': 'c',
-			'C++': 'c_plus',
-			'GitHub': 'github',
-		}
+    repositorios.forEach((repositorio) => {
+      // Seleciona o nome da Linguagem padrão do repositório
+      const linguagem = repositorio.language || "GitHub";
 
-        repositorios.forEach(repositorio => {
-      
-            // Seleciona o nome da Linguagem padrão do repositório
-            const linguagem = repositorio.language || 'GitHub'
-                    
-            // Seleciona o logo da Linguagem padrão do repositório
-            const logo = linguagens[linguagem] ?? linguagens['GitHub']
-                    
-            // Constrói a URL que aponta para o logo da Linguagem padrão do repositório
-            const urlLogo = `./assets/icons/languages/${logo}.svg`
-            
-            // Formata o nome do reposiório
-            const nomeFormatado = repositorio.name
-                .replace(/[-_]/g, ' ')
-                .replace(/[^a-zA-Z0-9\s]/g, '')
-                .toUpperCase();
+      // Seleciona o logo da Linguagem padrão do repositório
+      const logo = linguagens[linguagem] ?? linguagens["GitHub"];
 
-            // Função para truncar texto da descrição
-     		const truncar = (texto, limite) => texto.length > limite
-                ? texto.substring(0, limite) + '...'
-                : texto
+      // Constrói a URL que aponta para o logo da Linguagem padrão do repositório
+      const urlLogo = `./assets/icons/languages/${logo}.svg`;
 
-            // Define a descrição do Repositório
-            const descricao = repositorio.description
-                ? truncar(repositorio.description, 100)
-                : 'Projeto desenvolvido no GitHub'
+      // Formata o nome do reposiório
+      const nomeFormatado = repositorio.name
+        .replace(/[-_]/g, " ")
+        .replace(/[^a-zA-Z0-9\s]/g, "")
+        .toUpperCase();
 
-            // tags
-            const tags = repositorio.topics?.length > 0
-                ? repositorio.topics.slice(0, 3).map(topic => `<span class="tag">${topic}</span>`).join('')
-                : `<span class="tag">${linguagem}</span>`;
+      // Função para truncar texto da descrição
+      const truncar = (texto, limite) =>
+        texto.length > limite ? texto.substring(0, limite) + "..." : texto;
 
-            // Cria o Botão Deploy
-            const botaoDeploy = repositorio.homepage
-                ? `<a href="${repositorio.homepage}" target="_blank" class="botao-outline botao-sm">Deploy</a>`
-                : ''
+      // Define a descrição do Repositório
+      const descricao = repositorio.description
+        ? truncar(repositorio.description, 100)
+        : "Projeto desenvolvido no GitHub";
 
-            // Botões de ação
-            const botoesAcao = `
+      // tags
+      const tags =
+        repositorio.topics?.length > 0
+          ? repositorio.topics
+              .slice(0, 3)
+              .map((topic) => `<span class="tag">${topic}</span>`)
+              .join("")
+          : `<span class="tag">${linguagem}</span>`;
+
+      // Cria o Botão Deploy
+      const botaoDeploy = repositorio.homepage
+        ? `<a href="${repositorio.homepage}" target="_blank" class="botao-outline botao-sm">Deploy</a>`
+        : "";
+
+      // Botões de ação
+      const botoesAcao = `
                 <div class="project-buttons">
                     <a href="${repositorio.html_url}" target="_blank" class="botao botao-sm">
                         GitHub
@@ -131,7 +133,7 @@ async function getProjectsGithub() {
                 </div>
             `;
 
-            swiperWrapper.innerHTML += `
+      swiperWrapper.innerHTML += `
                 <div class="swiper-slide">
                     <article class="project-card">
                         <div class="project-image">
@@ -149,121 +151,121 @@ async function getProjectsGithub() {
                     </article>
                 </div>
             `;
-        });
+    });
 
-        // Inicia o Carrossel
-        iniciarSwiper();
-
-    } catch (error) {
-        console.error('Erro ao buscar repositórios:', error);
-    }
+    // Inicia o Carrossel
+    iniciarSwiper();
+  } catch (error) {
+    console.error("Erro ao buscar repositórios:", error);
+  }
 }
 
 // Executar a função ao carregar o script
-getProjectsGithub()
+getProjectsGithub();
 
 function iniciarSwiper() {
-    new Swiper('.projects-swiper', {
+  new Swiper(".projects-swiper", {
+    slidesPerView: 1,
+    slidesPerGroup: 1,
+    spaceBetween: 24,
+    centeredSlides: false,
+    loop: true,
+    watchOverflow: true,
+
+    breakpoints: {
+      0: {
         slidesPerView: 1,
         slidesPerGroup: 1,
-        spaceBetween: 24,
+        spaceBetween: 40,
         centeredSlides: false,
-        loop: true,
-        watchOverflow: true,
-        
-        breakpoints: {
-            0: {
-                slidesPerView: 1,
-                slidesPerGroup: 1,
-                spaceBetween: 40,
-                centeredSlides: false
-            },
-            769: { 
-                slidesPerView: 2,
-                slidesPerGroup: 2,
-                spaceBetween: 40,
-                centeredSlides: false
-            },
-            1025: { 
-                slidesPerView: 3,
-                slidesPerGroup: 3, 
-                spaceBetween: 54,
-                centeredSlides: false
-            }
-        },
-        
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            dynamicBullets: true,
-        },
-        
-        autoplay: {
-            delay: 5000,
-            pauseOnMouseEnter: true,
-            disableOnInteraction: false,
-        },
-        
-        grabCursor: true, 
-        slidesOffsetBefore: 0, 
-        slidesOffsetAfter: 0, 
-    });
+      },
+      769: {
+        slidesPerView: 2,
+        slidesPerGroup: 2,
+        spaceBetween: 40,
+        centeredSlides: false,
+      },
+      1025: {
+        slidesPerView: 3,
+        slidesPerGroup: 3,
+        spaceBetween: 54,
+        centeredSlides: false,
+      },
+    },
+
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+      dynamicBullets: true,
+    },
+
+    autoplay: {
+      delay: 5000,
+      pauseOnMouseEnter: true,
+      disableOnInteraction: false,
+    },
+
+    grabCursor: true,
+    slidesOffsetBefore: 0,
+    slidesOffsetAfter: 0,
+  });
 }
 
-formulario.addEventListener('submit', function(event) {
-    event.preventDefault();
+formulario.addEventListener("submit", function (event) {
+  event.preventDefault();
 
-    document.querySelectorAll('form span')
-        .forEach(span => span.innerHTML = '');
+  document
+    .querySelectorAll("form span")
+    .forEach((span) => (span.innerHTML = ""));
 
-    let isValid = true;
+  let isValid = true;
 
-    const nome = document.querySelector('#nome');
-    const erroNome = document.querySelector('#erro-nome');
-    
-    if (nome.value.trim().length < 3) {
-        erroNome.innerHTML = 'O Nome deve ter no mínimo 3 caracteres.';
-        if (isValid) nome.focus();
-        isValid = false;
-    }
+  const nome = document.querySelector("#nome");
+  const erroNome = document.querySelector("#erro-nome");
 
-    const email = document.querySelector('#email');
-    const erroEmail = document.querySelector('#erro-email');
-    
-    if (!email.value.trim().match(emailRegex)) {
-        erroEmail.innerHTML = 'Digite um e-mail válido.';
-        if (isValid) email.focus();
-        isValid = false;
-    }
+  if (nome.value.trim().length < 3) {
+    erroNome.innerHTML = "O Nome deve ter no mínimo 3 caracteres.";
+    if (isValid) nome.focus();
+    isValid = false;
+  }
 
-    const assunto = document.querySelector('#assunto');
-    const erroAssunto = document.querySelector('#erro-assunto');
-    
-    if (assunto.value.trim().length < 5) {
-        erroAssunto.innerHTML = 'O Assunto deve ter no mínimo 5 caracteres.';
-        if (isValid) assunto.focus();
-        isValid = false;
-    }
+  const email = document.querySelector("#email");
+  const erroEmail = document.querySelector("#erro-email");
 
-    const mensagem = document.querySelector('#mensagem');
-    const erroMensagem = document.querySelector('#erro-mensagem');
-    
-    if (mensagem.value.trim().length === 0) {
-        erroMensagem.innerHTML = 'A mensagem não pode ser vazia.';
-        if (isValid) mensagem.focus();
-        isValid = false;
-    }
+  if (!email.value.trim().match(emailRegex)) {
+    erroEmail.innerHTML = "Digite um e-mail válido.";
+    if (isValid) email.focus();
+    isValid = false;
+  }
 
-    if (isValid) {
-        const submitButton = formulario.querySelector('button[type="submit"]');
-        submitButton.disabled = true;
-        submitButton.textContent = 'Enviando...';
-        
-        formulario.submit();
-    }
+  const assunto = document.querySelector("#assunto");
+  const erroAssunto = document.querySelector("#erro-assunto");
+
+  if (assunto.value.trim().length < 5) {
+    erroAssunto.innerHTML = "O Assunto deve ter no mínimo 5 caracteres.";
+    if (isValid) assunto.focus();
+    isValid = false;
+  }
+
+  const mensagem = document.querySelector("#mensagem");
+  const erroMensagem = document.querySelector("#erro-mensagem");
+
+  if (mensagem.value.trim().length === 0) {
+    erroMensagem.innerHTML = "A mensagem não pode ser vazia.";
+    if (isValid) mensagem.focus();
+    isValid = false;
+  }
+
+  if (isValid) {
+    const submitButton = formulario.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "Enviando...";
+
+    formulario.submit();
+  }
 });
